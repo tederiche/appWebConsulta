@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Pesquisa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 class="titulo">Dados Vendedores</h1>
+
+    <form id="pesquisaForm" class="formulario">
+        <h1 class="tltForm">Vendedores</h1>
+        <br>
+
+        <label for="vendedor" class="labForm">Vendedor</label>
+        <div id="selectContainerVendedor"></div>
+        <br>
+
+        <label for="Dia" class="labForm">Dia</label>
+        <div id="dia"></div>
+        
+        <label for="Mes" class="labForm">Mês</label>
+        <div id="mes"></div>
+
+        <label for="Ano" class="labForm">Ano</label>
+        <div id="ano"></div>
+        <br>
+        <label>Escolha</label>
+        <br>
+        <input type="radio" name="escolha" id="escolha" value="concluido" checked>
+        <label for="concluido">Concluido</label>
+
+        <input type="radio" name="escolha" id="escolha" value="renegociar">
+        <label for="renegociar">Renegociar</label>
+
+        <button class="btnEnviarVendas" onclick="">Puxar Dados</button>
+
+    </form>
+
+    <script>
+        async function carregarOpcoesVendedores() {
+            try {
+                const response = await fetch('vendedores.json');
+                if (!response.ok) {
+                    throw new Error(`Erro ao carregar vendedores.json: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+
+                
+                const selectContainerVendedor = document.getElementById('selectContainerVendedor');
+                const selectVendedor = document.createElement('select');
+                selectVendedor.id = "operador";
+                selectVendedor.className = "inputvendedor operador";
+                selectVendedor.name = "valorVendedor";
+                
+                // Adiciona uma opção vazia
+                const optionVazia = document.createElement('option');
+                optionVazia.value = '';
+                optionVazia.textContent = 'Selecione um vendedor';
+                selectVendedor.appendChild(optionVazia);
+
+                // Adiciona opções para cada vendedor
+                data.vendedores.forEach((vendedor) => {
+                    const option = document.createElement('option');
+                    option.value = vendedor;
+                    option.textContent = vendedor;
+                    selectVendedor.appendChild(option);
+                });
+                
+                // Adiciona o select ao container
+                selectContainerVendedor.appendChild(selectVendedor);
+            } catch (error) {
+                console.error('Erro ao carregar opções de vendedores:', error);
+            }
+        }
+
+        async function carregarOpcoesDias() {
+            const response = await fetch('dias.json');
+            const data = await response.json();
+
+            const selectContainerDia = document.getElementById('dia');
+            const selectDias = document.createElement('select');
+            selectDias.className = "inputdia dia";
+            selectDias.name = "valorDia";
+
+            data.forEach((valor) => {
+                const option = document.createElement('option');
+                option.value = valor;
+                option.textContent = valor;
+                selectDias.appendChild(option);
+            });
+
+            selectContainerDia.appendChild(selectDias);
+        }
+
+        async function carregarOpcoesMeses() {
+            const response = await fetch('mes.json');
+            const data = await response.json();
+
+            const selectContainerMes = document.getElementById('mes');
+            const selectMes = document.createElement('select');
+            selectMes.className = "inputMes mes";
+            selectMes.name = "valorMes";
+
+            data.forEach((valor) => {
+                const option = document.createElement('option');
+                option.value = valor;
+                option.textContent = valor;
+                selectMes.appendChild(option);
+            });
+
+            selectContainerMes.appendChild(selectMes);
+        }
+
+        async function carregarOpcoesAno() {
+            const response = await fetch('ano.json');
+            const data = await response.json();
+            data.sort();
+
+            const selectContainerAno = document.getElementById('ano');
+            const selectAno = document.createElement('select');
+            selectAno.className = "inputAno ano";
+            selectAno.name = "valorAno";
+
+            data.forEach((valor) => {
+                const option = document.createElement('option');
+                option.value = valor;
+                option.textContent = valor;
+                selectAno.appendChild(option);
+            });
+
+            selectContainerAno.appendChild(selectAno);
+        }
+
+        async function puxarDados() {
+        const vendedor = document.getElementById('selectContainerVendedor').value;
+        const dia = document.getElementById('dia').value;
+        const mes = document.getElementById('mes').value;
+        const ano = document.getElementById('ano').value;
+        const escolha = document.querySelector('input[name="escolha"]:checked').value;
+
+        const response = await fetch('/puxarDados', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ vendedor, dia, mes, ano, escolha }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+        // Faça o que for necessário com os dados recebidos do servidor
+        }
+
+        carregarOpcoesVendedores()
+        // Chamar a função para carregar as opções do Dia
+        
+        carregarOpcoesDias();
+
+        // Chamar a função para carregar as opções do Mês
+        carregarOpcoesMeses();
+
+        // Chamar a função para carregar as opções do Ano
+        carregarOpcoesAno();
+
+    </script>
+</body>
+</html>
