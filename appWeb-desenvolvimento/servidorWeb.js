@@ -2,9 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
-const { fazerPesquisa } = require('./conexaoWebMongoDBTEST.js'); // Usando caminho relativo
-const { salvarResposta } = require('./server.js'); // Usando caminho relativo
-const { vendasController } = require('./vendasController.js'); //Usando caminho relativo
+const { fazerPesquisa } = require('./pesquisa.js'); // Usando caminho relativo
+const { salvarResposta } = require('./cadastroVendas.js'); // Usando caminho relativo
+const { vendasController } = require('./dadosVendas.js'); //Usando caminho relativo
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -31,8 +31,8 @@ app.get('/vendas.html', (req, res) => {
 });
 
 // Rota do Terceiro arquivo
-app.get('/vendasDados.html', (req, res)=>{
-    const filePath = path.join(__dirname, 'public', 'vendasDados.html');
+app.get('/dadosvendedores.html', (req, res)=>{
+    const filePath = path.join(__dirname, 'public', 'dadosvendedores.html');
     res.sendFile(filePath)
 });
 
